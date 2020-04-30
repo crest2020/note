@@ -1,0 +1,5 @@
+#主成分分析  
+library(FactoMineR)  
+library(factoextra)  
+dat.pca=PCA(t(choose_matrix),graph = F)  
+fviz_pca_ind(dat.pca,rep=T,geom.ind = "point",col.ind = group_list,addEllipses = T,legend.title="Groups")  
