@@ -1,0 +1,9 @@
+#统计sam文件比对情况
+## stats.sh  
+cat config | while read id  
+do  
+	bam=./4.align/${id}.bam  
+	samtools stats -@ 16 --reference ~/wes_cancer/data/Homo_sapiens_assembly38.fasta ${bam} > ./4.align/stats/${id}.stat  
+
+	plot-bamstats -p ./4.align/stats/${id} ./4.align/stats/${id}.stat  
+done  
