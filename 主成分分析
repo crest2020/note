@@ -5,4 +5,4 @@ dat.pca=PCA(t(choose_matrix),graph = F)
 fviz_pca_ind(dat.pca,rep=T,geom.ind = "point",col.ind = group_list,addEllipses = T,legend.title="Groups")  
 #链接地址
 
-https://mp.weixin.qq.com/s?__biz=MzAxMDkxODM1Ng==&mid=2247487020&idx=1&sn=e28ed93276a971c193d843307ab92274&chksm=9b484e97ac3fc781e10502d9c90f8c9fbb1032a1ff7cf96611647e1afc30086c5ed80a72b116#rd
+链接地址：https://mp.weixin.qq.com/s?__biz=MzAxMDkxODM1Ng==&mid=2247487020&idx=1&sn=e28ed93276a971c193d843307ab92274&chksm=9b484e97ac3fc781e10502d9c90f8c9fbb1032a1ff7cf96611647e1afc30086c5ed80a72b116#rd
