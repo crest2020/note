@@ -1,0 +1,16 @@
+#第一种方法
+txdb = makeTxDbFromGFF('./Homo_sapiens.GRCh38.87.gtf',format = "gtf",circ_seqs = character())  
+
+#Abstract sites information  
+
+genes <- genes(txdb)  
+
+TS=transcripts(txdb)  
+
+EX=exons(txdb)  
+
+#第二种方法
+
+cat /public/annotation/CCDS/human/CCDS.20160908.txt  |  
+perl -alne '{/\[(.*?)\]/;next unless $1;$gene=$F[2];$exons=$1;$exons=~s/\s//g;$exons=~s/-/\t/g;print "$F[0]\t$_\t$gene" foreach split/,/,$exons;}'|  
+sort -u |bedtools sort -i |awk '{print "chr"$0"\t0\t+"}'  > $wkd/align/hg38.exon.bed  
