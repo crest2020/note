@@ -4,4 +4,4 @@ ChAMP
 minfi
 wateRmelon
 
-[baidu](www.baidu.com)
+[baidu](https://www.baidu.com)
