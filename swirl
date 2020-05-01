@@ -1,0 +1,10 @@
+#学习资源
+
+https://swirlstats.com/students.html
+
+https://guangchuangyu.github.io/cn/2017/07/swirl/
+
+> install.packages("swirl")
+
+> library("swirl")  
+> swirl()
