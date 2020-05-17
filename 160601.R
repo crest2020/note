@@ -1,0 +1,34 @@
+ir=IRanges(start=1:3,width=2)
+df=DataFrame(ir=ir,score=rnorm(3))
+df
+values(gf)=DataFrame(score=rnorm(3))
+gf
+gf$score
+gf$score2=gf$score/3
+gf
+gf2=GRanges(seqnames=c("Chr1","Chr2","Chr1"),ranges =IRanges(start=c(2,3,4),width=6))
+gf2
+gf
+gr=GRanges(seqnames=c("Chr1","Chr2"),ranges=IRanges(start=1:2,end=4:5))
+gr
+seqlevels(gr,force=TRUE)="chr1"
+gr
+seqlevels(gr,force=TRUE)="Chr1"
+gr
+gr=GRanges(seqnames=c("chr1","chr2"),ranges=IRanges(start=1:2,end=4:5))
+gr
+seqlevels(gr,force=TRUE)="Chr1"
+gr
+dropSeqlevels(gr,"Chr2")
+keepSeqlevels(gr,"Chr1")
+library(AnnotationHub)
+ah=AnnotationHub()
+ah[1]
+unique(ah$dataprovider)
+unique(ah$species)
+ah1=subset(ah,species=="Homo sapiens")
+ah1
+qhs=query(ah,c("H3K4me3","Gm12878"))
+library(rtracklayer)
+gr1=qhs[[2]]
+gr1
