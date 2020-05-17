@@ -1,0 +1,532 @@
+library(BiocInstaller)
+library(gwascat)
+data("gwrngs19")
+gwrngs19[100]
+mcols(gwrngs19[100])[,c(2,7,8,9,10,11)]
+library(ERBS)
+data("GM12878")
+fo=findOverlaps(GM12878,gwrngs19)
+fo
+sort(table(gwrngs19$Disease.Trait[subjectHits(fo)]),decreasing = T)
+length(gwrngs19)-length(reduce(gwrngs19))
+fo=findOverlaps(GM12878,reduce(gwrngs19))
+fo
+ovrngs=reduce(gwrngs19)[subjectHits(fo)]
+phset=lapply(ovrngs, function(x) unique(gwrngs19[which(gwrngs19%over%x)]$Disease.Trait))
+ovrngs
+phset
+sort(table(unlist(phset)),decreasing = T)[1:5]
+library(RSQLite)
+lcon=dbConnect(SQLite(),Sys.getenv("GEOMETADB_SQLITE_PATH"))
+dbListTables(lcon)
+lcon = dbConnect(SQLite(), Sys.getenv("GEOMETADB_SQLITE_PATH"))
+library(GEOmetadb)
+biocLite("GEOmetadb")
+getSQLiteFile()
+
+library(ph525x)
+data(readMuts)
+data(package="ph525x")
+help(package="genefilter",help_type = "html")
+methods(class="ExpressionSet")
+methods(class="lm")
+library(rafalib)
+data("sample.ExpressionSet")
+WhatMethods(sample.ExpressionSet)
+whatMethods(sample.ExpressionSet)
+plotMA
+showMethods("plotMA")
+findMethods(sample.ExpressionSet)
+??whatMethods
+methods(class=class(sample.ExpressionSet))
+library(COPDSexualDimorphism.data)
+data(lgrc.expr.meta)
+with(expr.meta,table(gender,diagmaj))
+gd=with(expr.meta,factor(paste(gender,diagmaj)))
+expr.meta$gd=gd
+library(ggplot2)
+ggplot(expr.meta,aes(x=gd,y=pkyrs))+geom_boxplot()
+plot(pkyrs~gd,data=expr.meta)
+library(ph525x)
+modPlot("ORMDL3", collapse=FALSE, useGeneSym=FALSE)
+library(Homo.sapiens)
+orfunc=select(Homo.sapiens,key="ORMDL3",keytype = "SYMBOL",columns = c("GO","TERM"))
+orfunc
+library(Biobase)
+data("sample.ExpressionSet")
+sample.ExpressionSet
+experimentData(sample.ExpressionSet)
+samp=sample.ExpressionSet
+dim(samp)
+exprs(samp)[1:5,1:6]
+pData(samp)
+abstract(samp)
+samp[1:4,3:20]
+samp[,samp$sex=="Male"]
+library(IRanges)
+ir=IRanges(5,10)
+ir
+start(ir)
+end(ir)
+width(ir)
+IRanges(start=c(3,5,17),end=c(10,8,20))
+ir
+shift(ir,-2)
+narrow(ir,start = 2)
+narrow(ir,end=5)
+flank(ir,width=3,start = T,both=F)
+ir
+flank(ir,width=3,start = T,both=T)
+ir
+ir*2
+ir*-2
+(ir <- IRanges(start=c(3,5,17), end=c(10,8,20)))
+ir
+range(ir)
+reduce(ir)
+gaps(ir)
+disjoin(ir)
+library(GenomicRanges)
+gr=GRanges("chrZ",IRanges(start = c(5,10),end=c(35,45)),strand = "+",seqlengths = c(chrZ=100L))
+gr
+genome(gr)="hg19"
+gr
+seqnames(gr)
+seqlengths(gr)
+shift(gr,10)
+shift(gr,80)
+trim(shift(gr,80))
+mcols(gr)
+mcols(gr)$value=c(-1,4)
+gr
+mcols(gr)$value=NULL
+gr2=GRanges("chrZ",IRanges(11:13,51:53))
+gr1=GRangesList(gr,gr2)
+gr1
+length(gr1)
+elementLengths(gr1)
+gr1[[1]]
+width(gr1)
+sum(width(gr1))
+mcols(gr1)$value=c(5,7)
+gr1
+mcols(gr1)
+gr1=GRanges("chrZ",IRanges(c(1,11,21,31,41),width=5),strand="*")
+gr1
+gr2=GRanges("chrZ",IRanges(c(19,33),c(38,35)),strand = "*")
+gr2
+fo=findOverlaps(gr1,gr2)
+fo
+queryHits(fo)
+subjectHits(fo)
+gr1%over%gr2
+gr1[gr1%over%gr2]
+gr1
+gr1=GRanges("chrZ",IRanges(1,10),strand="+")
+gr2=GRanges("chrZ",IRanges(1,10),strand = "-")
+gr1%over%gr2
+r=Rle(c(1,1,1,0,0,-2,-2,-2,rep(-1,20)))
+r
+str(r)
+as.numeric(r)
+v=Views(r,start=c(4,2),end=c(7,6))
+v
+str(v)
+ir=IRanges(c(3,8,14,15,19,34,40),width=c(12,6,6,15,6,2,7))
+ir
+par(mfrow=c(4,1))
+plotRanges(ir,xlim=c(0,60),xlim=c(0,60))
+plotRanges(reduce(ir),xlim=c(0,60))
+plotRanges(disjoin(ir),xlim=c(0,60))
+plotRanges(ir*2,xlim=c(0,60))
+library(GenomicRanges)
+gir=GRanges(seqnames="chr1",ir,strand=c(rep("+",4),rep("-",3)))
+gir
+plotRanges(flank(gir,2,start=F),xlim=c(0,60))
+plotRanges(resize(gir,1),xlim=c(0,60))
+library(rtracklayer)
+ch=import.chain("hg38ToHg19.over.chain")
+ch
+str(ch[[1]])
+biocLite("TxDb.Hsapiens.UCSC.hg38.knownGene")
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+tx38=TxDb.Hsapiens.UCSC.hg38.knownGene
+seqlevels(tx38,force=T)="chr1"
+g1_38=genes(tx38)
+g1_19L=liftOver(g1_38,ch)
+g1_19L
+g1_38
+library(pasillaBamSubset)
+library(Rsamtools)
+filename=untreated1_chr4()
+filename
+bf=BamFile(filename)
+bf
+seqinfo(bf)
+sl=seqlengths(bf)
+sl
+quickBamFlagSummary(bf)
+gr=GRanges("chr4",IRanges(1,sl["chr4"]))
+gr
+sl
+gr
+countBam(bf,param=ScanBamParam(which=gr))
+reads=scanBam(BamFile(filename,yieldSize = 5))
+reads
+class(reads)
+names(reads[[1]])
+reads[[1]]$pos
+reads[[1]]$rname
+reads[[1]]$strand
+reads[[1]]$qwidth
+reads[[1]]$seq
+gr=GRanges("chr4",IRanges(500000,700000))
+gr
+reads=scanBam(bf,param=ScanBamParam(what = c("pos","strand"),which=gr))
+reads
+hist(reads[[1]]$pos)
+readbystrand=split(reads[[1]]$pos,reads[[1]]$strand)
+myhist=function(x) table(cut(x,50:70*10000))
+tab=sapply(readbystrand,myhist)
+barplot(t(tab))
+tab
+t(tab)
+library(GenomicAlignments)
+ga=readGAlignments(bf)
+ga
+length(ga)
+granges(ga[1])
+gr=GRanges("chr4",IRanges(700000,800000))
+gr
+fo=findOverlaps(ga,gr)
+fo
+countOverlaps(gr,ga)
+table(ga%over%gr)
+library(TxDb.Dmelanogaster.UCSC.dm3.ensGene)
+txdb=TxDb.Dmelanogaster.UCSC.dm3.ensGene
+grl=exonsBy(txdb,by="gene")
+grl[100]
+grl[[100]][1]
+fl1=untreated1_chr4()
+fl2=untreated3_chr4()
+fl1
+library(Rsamtools)
+fls=BamFileList(c(fl1,fl2))
+fls
+names(fls)=c("first","second")
+fls
+sol=summarizeOverlaps(features = grl,reads=fls,ignore.strand = T)
+head(assay(sol))
+colSums(assay(sol))
+rowData(sol)
+rowRanges(sol)
+colData(sol)
+colData(sol)$sample=c("one","two")
+colData(sol)
+metadata(rowRanges(sol))
+x=assay(sol)[,1]
+hist(x[x>0&x<10000],col="grey")
+plot(assay(sol)+1,log="xy")
+fls=BamFileList(fl2)
+so2=summarizeOverlaps(features = grl,reads=fls,ignore.strand = T,singleEnd=F,fragments=T)
+colSums(assay(so2))
+colSums(assay(sol))
+plot(assay(sol)[,2],assay(so2)[,1],xlim=c(0,5000),ylim=c(0,5000),xlab="single end counting",ylab="paired end counting")
+anline(0,1)
+abline(0,1)
+abline(0,.5)
+library(maPooling)
+data("maPooling")
+pd=pData(maPooling)
+individuals=which(rowSums(pd)==1)
+individuals
+head(pd)
+dim(pd)
+individuals=individuals[-grep("tr",names(individuals))]
+individuals
+y=exprs(maPooling)[,individuals]
+head(exprs(maPooling))
+g=factor(as.numeric(grepl("b",names(individuals))))
+g
+grepl("b",names(individuals))
+library(genefilter)
+tt=rowttests(y,g)
+sum(tt$p.value<0.05)
+set.seed(0)
+shuffledindex=factor(sample(c(0,1),sum(g==0),replace=T))
+shuffledindex
+g
+sum(g==0)
+nulltt=rowttests(y[,g==0],shuffledindex)
+sum(nulltt$p.value<0.05)
+library(qvalue)
+qvals=qvalue(tt$p.value)$qvalue
+sum(qvals<0.01)
+library(qvalue)
+nullqvals=qvalue(nulltt$p.value)$qvalue
+sum(nullqvals<0.05)
+biocLite("SpikeInSubset")
+library(BiocInstaller)
+library(SpikeInSubset)
+data("rma95")
+fac=factor(rep(1:2,each=3))
+fac
+library(genefilter)
+rtt=rowttests(exprs(rma95),fac)
+sum(rtt<0.01)
+sum(rtt$p.value<0.01)
+mask=with(rtt,abs(dm)<0.2&p.value<.01)
+spike=rownames(rma95)%in%colnames(pData(rma95))
+head(spike,n=100)
+c(1,2,3,4)%in%c(3,2,6,7,90)
+rma95
+pdata=pData(rma95)
+head(pdata,n=30)
+head(colnames(pdata))
+exp=exprs(rma95)
+head(rownames(exp))
+head(exp)
+head(spike,n=100)
+library(limma)
+fit=lmFit(rma95,design = model.matrix(~fac))
+colnames(coef(fit))
+fit
+fit=eBayes(fit)
+tt=toptable(fit,coef = 2)
+tt
+limmares=data.frame(dm=coef(fit)[,"fac2"],p.value=fit$p.value[,"fac2"])
+cols <- ifelse(mask,"red",ifelse(spike,"dodgerblue","black"))
+with(limmares,plot(dm,-log10(p.value),cex=.8,pch=16,col=cols,xlab="difference in means",xlim=c(-1,1),ylim=c(0,5)))
+abline(h=2,v=c(-0.2,0.2),lty=2)
+library(rafalib)
+biocLite("GSEABase")
+library(GSEABase)
+library(GSE5859Subset)
+data(GSE5859Subset)
+library(sva)
+biocLite("sva")
+??sva
+model.matrix(~1,bb)
+bb=as.factor(c(2,3,4,56,7))
+library(limma)
+X=sampleInfo$group
+X
+mod=model.matrix(~X)
+mod
+svafit=sva(geneExpression,mod)
+svaX=model.matrix(~X+svafit$sv)
+lmfit=lmFit(geneExpression,svaX)
+lmfit
+svaX
+tt=lmfit$coefficients[,2]*sqrt(lmfit$df.residual)/(2*lmfit$sigma)
+lmfit$coefficients
+head(lmfit$df.residual)
+head(lmfit$sigma)
+pval=2*(1-pt(abs(tt),lmfit$df.residual[1]))
+qval=p.adjust(pval,"BH")
+sum(qval<0.05)
+head(ls())
+.ls()
+.libPaths()
+dir(.libPaths())
+dir(getwd())
+getwd()
+gsets=getGmt("c1.all.v4.0.entrez.gmt")
+length(gsets)
+head(names(gsets))
+gsets["chryq11"]
+head(geneIds(gsets[["chryq11"]]))
+mapgmt2affy=function(object,gsets){
+  ann<-annotation(object)
+  dbname<-paste(ann,"db",sep=".")
+  require(dbname,character.only=T)
+  gns<-featureNames(object)
+  map<-select(get(dbname),keys=gns,columns = c("ENTREZID","PROBEID"))
+  map<-split(map[,1],map[,2])
+  indexes<-sapply(gsets,function(ids){
+    gns2<-unlist(map[geneIds(ids)])
+    match(gns2,gns)
+  })
+  names(indexes)<-names(gsets)
+  return(indexes)
+}
+
+rownames(sampleInfo)=colnames(geneExpression)
+e=ExpressionSet(assay=geneExpression,phenoData = AnnotatedDataFrame(sampleInfo),annotation = "hgfocus")
+gsids=mapgmt2affy(e,gsets)
+gsids
+e
+head(geneExpression)
+sampleInfo
+e
+gsids
+tab=table(ingenset=1:nrow(e)%in%gsids[["chryq11"]],signif=qval<0.05)
+tab
+?signif
+chisq.test(tab)$p.val
+library(rafalib)
+mypar(1,1)
+qs=seq(0,1,len=length(tt)+1)-1/(2*length(tt))
+qs=qs[-1]
+qqplot(qt(qs,lmfit$df.resid),tt,ylim=c(-10,10),xlab="Theroretical quantiles",ylab="Observed")
+lmfit$df.resid
+abline(0,1)
+head(lmfit$coef[,2])
+ind=gsids[["chrxp11"]]
+plot(density(tt[-ind]),xlim=c(-7,7),main="",xlab="t-stat",sub="",lwd=4)
+lines(density(tt[ind],bw=.7),col=2,lty=2,lwd=4)
+rug(tt[ind],col=2)
+signif=qval<0.05
+signif
+head(ind)
+es=lmfit$coefficients[,2]
+es
+wilcox=t(sapply(gsids, function(i){
+  if(length(i)>2){
+    tmp<-wilcox.test(es[i],es[-i])
+    n1<-length(i)
+    n2<-length(es)-n1
+    z=(tmp$stat-n1*n2/2)/sqrt(n1*n2*(n1+n2+1)/12)
+    return(c(z,tmp$p.value))
+    
+    
+  }
+  else return(rep(NA,2))
+}))
+
+
+dd=seq(1:30)
+dd
+dd[7]
+dd[-7]
+head(gsids)
+es
+head(es)
+dim(es)
+length(es)
+es[gsids]
+gsids
+library(GEOquery)
+g=getGEO("GSE34313")
+e=g[[1]]
+e
+head(exprs(e))
+e$condition=e$characteristics_ch1.2
+e$condition
+pdata=pData(e)
+head(pdata)
+pdata
+levels(e$condition)=c("dex24","dex4","none")
+table(e$condition)
+boxplot(exprs(e),range=0)
+u1=c(1,2,3,4)
+u2=c(3,4,5,6,7,8)
+u2[match(u1,u2)]
+u1%in%u2
+?match
+u1
+u2
+u1[match(u2,u1)]
+mypar(3,1)
+library(rafalib)
+mypar(3,1)
+n=10000
+brks=0:300
+hist(rpois(n,10)*10,main="",xlab="",breaks=brks,col="black")
+library(airway)
+library(DESeq2)
+data(airway)
+dds=DESeqDataSet(airway,design=~cell+dex)
+airway
+exp=assay(airway)
+head(exp)
+design(dds)
+levels(dds$dex)
+head(dds)
+dds=DESeq(dds)
+res=results(dds)
+head(res)
+table(res$padj<0.1)
+summary(res)
+res2=results(dds,alpha = 0.05)
+table(res2$padj<0.05)
+plotMA(res,ylim=c(-4,4))
+res.thr=results(dds,lfcThreshold = 1)
+plotMA(res.thr,ylim=c(-4,4))
+hist(res$pvalue[res$baseMean>1],col="grey",border = "white",xlab="",ylab="",main="")
+resort=res[order(res$padj),]
+head(resort)
+plotCounts(dds,gene=which.min(res$padj),intgroup = "dex")
+library(ggplot2)
+data=plotCounts(dds,gene=which.min(res$padj),intgroup = c("dex","cell"),returnData = T)
+ggplot(data,aes(x=dex,y=count,col=cell))+geom_point(position = position_jitter(width=.1,height = 0))+scale_y_log10()
+ggplot(data,aes(x=dex,y=count,col=cell,group=cell))+geom_point()+geom_line()+scale_y_log10()
+library(pheatmap)
+install.packages("pheatmap")
+topgene=head(rownames(resort),20)
+mat=assay(rld)[topgene,]
+library(DESeq2)
+rld=rlog(dds,blind=F)
+plot(assay(rld)[,1:2],cex=.1)
+mat=mat-rowMeans(mat)
+df=as.data.frame(colData(dds)[,c("dex","cell")])
+df
+pheatmap(mat)
+library(org.Hs.eg.db)
+keytypes(org.Hs.eg.db)
+anno=select(org.Hs.eg.db,keys=topgene,columns = c("SYMBOL","GENENAME"),keytype = "ENSEMBL")
+anno[match(topgene,anno$ENSEMBL),]
+results(dds,contrast = c("cell","N61311","N052611"))
+library(sva)
+dat=counts(dds,normalized=T)
+idx=rowMeans(dat)>1
+dat=dat[idx,]
+mod=model.matrix(~dex,colData(dds))
+colData(dds)
+mod0=model.matrix(~1,colData(dds))
+mod
+mod0
+svseq=svaseq(dat,mod,mod0,n.sv=2)
+plot(svseq$sv[,1], svseq$sv[,2], col=dds$cell, pch=16)
+dds.sva=dds
+svseq
+?sva
+browseVignettes("sva")
+library(sva)
+library(BiocInstaller)
+biocLite("bladderbatch")
+library(bladder)
+library(bladderbatch)
+data(bladderdata)
+library(pamr)
+library(limma)
+pheno=pData(bladderEset)
+head(pheno)
+dim(pheno)
+edata=exprs(bladderEset)
+cancer
+mod=model.matrix(~as.factor(cancer),data=pheno)
+mod0=model.matrix(~1,data=pheno)
+head(mod0)
+n.sv=num.sv(exprs(bladderEset),mod,method = "leek")
+n.sv
+edata
+svobj=sva(edata,mod,mod0)
+library(minfi)
+library(pkgmaker)
+library(doParallel)
+library(IlluminaHumanMethylation450kmanifest)
+path="idats"
+list.files(path)
+index=grep("idat$",list.files())
+list.files()[index]
+targets=read.csv("targets.csv",as.is=T)
+names(targets)
+length(targets$Basename)
+targets$bcr_patient_barcode
+targets1=targets[!is.na(targets),]
+dim(targets1)
+targets$Basename
+targets2=targets[1:6,]
+targets2$Basename
+rgset=read.450k(targets2$Basename,verbose = T)
